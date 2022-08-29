@@ -44,7 +44,6 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
     final result = await _useCaseProvider.getShortLinksFromHistory(NoParams());
 
     result.fold((l) => null, (r) => shortLinkList = r.map((e) => e).toList());
-    // print(shortLinkList);
     emit(state.copyWith(shortLinks: shortLinkList));
   }
 

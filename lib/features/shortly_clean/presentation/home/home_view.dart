@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_svg/svg.dart';
 
 import '../../../../core/config/dependency/injectable.dart';
 import '../../domain/entities/short_link_entity.dart';
@@ -32,11 +33,12 @@ class HomeView extends StatelessWidget {
                             child: Column(
                               children: [
                                 SizedBox(height: padding.top + 50),
-                                Icon(
-                                  Icons.warning,
-                                  size: 48,
-                                  color: Colors.red,
-                                ),
+                                Center(
+                                    child: SvgPicture.asset(
+                                  'assets/shortly.svg',
+                                  width: size.width * 0.8,
+                                )),
+                                const SizedBox(height: 20),
                                 // const Image(
                                 //   image: AssetImage("assets/icons/shortly.png"),
                                 // ),
