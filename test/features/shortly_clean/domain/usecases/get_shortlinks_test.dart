@@ -70,7 +70,7 @@ class MockRepo extends Mock implements ShortLinkRemoteRepository {
 }
 
 void main() {
-  group('GetUserUseCase', () {
+  group('GetShortlinkGroup', () {
     GetShortLinksFromHistoryList? getShortLinksFromHistoryList;
     AddShortLinkToHistoryList? addShortLinkToHistoryList;
     _Observer? observer;
@@ -84,25 +84,12 @@ void main() {
       secondObserver = _ObserverSecond();
     });
 
-    // test('Adds a shortlink to list', () async {
-    //   addShortLinkToHistoryList!.execute(secondObserver!,
-    //       AddShortLinkToHistoryListParams('https://github.com/'));
-    //   await Future.delayed(const Duration(milliseconds: 1000), () {
-    //     // expect(addShortLinkToHistoryListObserver, 2);
-    //     expect(observer!.done, true);
-    //     expect(observer!.error, false);
-    //   });
-    //   // a.dispose();
-    // });
-
-    test('Adds a shortlink to list', () async {
+    test('gets a open stream shortlink  list', () async {
       addShortLinkToHistoryList!.execute(secondObserver!,
           AddShortLinkToHistoryListParams('https://github.com/'));
 
       getShortLinksFromHistoryList!.execute(observer!);
       await Future.delayed(const Duration(milliseconds: 1000), () {
-        // expect(addShortLinkToHistoryListObserver, 2);
-        // expect(observer!.done, false);
         expect(observer!.onNextResponse, true);
         expect(observer!.error, false);
       });
@@ -145,7 +132,7 @@ class _ObserverSecond implements Observer<void> {
   @override
   void onComplete() {
     done = true;
-    print('addONcoMPLET');
+    print('addOnComplete');
   }
 
   @override

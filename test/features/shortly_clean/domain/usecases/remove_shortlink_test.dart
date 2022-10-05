@@ -7,7 +7,7 @@ import 'package:shortly_clean/features/shortly_clean/domain/usecases/remove_shor
 import 'add_short_link_usecase_test.mocks.dart';
 
 void main() {
-  group('GetUserUseCase', () {
+  group('RemoveShortLinkUseCase', () {
     RemoveShortLinkFromHistoryList? removeShortLinkFromHistoryList;
 
     _Observer? observer;
@@ -18,7 +18,7 @@ void main() {
       observer = _Observer();
     });
 
-    test('Adds a shortlink to list', () async {
+    test('removes a shortlink from list', () async {
       removeShortLinkFromHistoryList!
           .execute(observer!, RemoveShortLinkFromHistoryListParams(''));
       await Future.delayed(const Duration(milliseconds: 1000), () {
