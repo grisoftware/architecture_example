@@ -3,24 +3,24 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:injectable/injectable.dart';
-import 'package:shortly_clean/core/usecase/usecase.dart';
-import 'package:shortly_clean/features/shortly_clean/domain/usecases/add_short_link.dart';
-import 'package:shortly_clean/features/shortly_clean/domain/usecases/remove_short_link.dart';
-import 'package:shortly_clean/features/shortly_clean/presentation/home/home_usecase_provider/home_usecase_provider.dart';
+import 'package:shortly_clean/features/shortly_clean/domain/repository/remote/short_link_remote_repository.dart';
+import 'package:shortly_clean/features/shortly_clean/presentation/home/home_presenter.dart';
 
+import '../../../data/model/short_link_model.dart';
 import '../../../domain/entities/short_link_entity.dart';
 
 part 'home_event.dart';
 part 'home_state.dart';
 
 @injectable
-class HomeBloc extends Bloc<HomeEvent, HomeState> {
-  final HomeUseCaseProviderImpl _useCaseProvider;
+class HomeBloc extends Bloc<HomeEvent, HomeState> with ChangeNotifier {
+  // final HomeUseCaseProviderImpl _useCaseProvider;
   final TextEditingController editingController = TextEditingController();
   List<ShortLink> shortLinkList = [];
+  final HomePresenter _presenter;
 
-  HomeBloc(HomeUseCaseProviderImpl useCaseProviderImpl)
-      : _useCaseProvider = useCaseProviderImpl,
+  HomeBloc(ShortLinkRemoteRepository remoteRepository)
+      : _presenter = HomePresenter(remoteRepository),
         super(HomeState(
           shortLinks: const [],
           fullLinks: const [],
@@ -41,26 +41,55 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
     Init event,
     Emitter<HomeState> emit,
   ) async {
-    final result = await _useCaseProvider.getShortLinksFromHistory(NoParams());
+    _presenter.getShortLinks();
+    initListeners();
 
-    result.fold((l) => null, (r) => shortLinkList = r.map((e) => e).toList());
-    emit(state.copyWith(shortLinks: shortLinkList));
+    // result.fold((l) => null, (r) => shortLinkList = r.map((e) => e).toList());
+    // emit(state.copyWith(shortLinks: shortLinkList));
+  }
+
+  @mustCallSuper
+  void initListeners() {
+    _presenter.getShortLinkOnNext = (List<ShortLinkModel> response) {
+      shortLinkList = response
+          .map(
+            (e) => ShortLink(
+              id: e.id,
+              fullShortLink: e.fullShortLink,
+            ),
+          )
+          .toList();
+
+      add(const OnGetShortLinks());
+    };
+
+    _presenter.getShortLinkOnError = (e) {};
+
+    _presenter.addShortLinkOnComplete = () {
+      // ignore: avoid_print
+      print("complete");
+    };
+
+    _presenter.addShortLinkOnError = (e) {};
+
+    _presenter.removeShortLinkOnComplete = () {};
+
+    _presenter.removeShortLinkOnError = (e) {};
   }
 
   Future<void> _onGetShortLinks(
     OnGetShortLinks event,
     Emitter<HomeState> emit,
   ) async {
-    final result = await _useCaseProvider.getShortLinksFromHistory(NoParams());
+    // final result = await _presenter.ge(NoParams());
 
-    result.fold((l) => null, (r) => shortLinkList = r.map((e) => e).toList());
+    // result.fold((l) => null, (r) => shortLinkList = r.map((e) => e).toList());
     // print(shortLinkList);
     emit(state.copyWith(shortLinks: shortLinkList));
   }
 
   Future<void> addShortLinkToHistoryList(String url) async {
-    await _useCaseProvider
-        .addShortLinkToHistoryList(AddShortLinkToHistoryListParams(url));
+    _presenter.addShortLinks(url);
   }
 
   void onShortenItButtonPressed(
@@ -72,7 +101,7 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
 
     await addShortLinkToHistoryList(event.url);
 
-    await getShortLinks(emit);
+    // await getShortLinks(emit);
 
     editingController.clear();
     // emit(state.copyWith(isAddButtonPressed: true));
@@ -81,9 +110,9 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
   Future<void> getShortLinks(
     Emitter<HomeState> emit,
   ) async {
-    final result = await _useCaseProvider.getShortLinksFromHistory(NoParams());
+    _presenter.getShortLinks();
 
-    result.fold((l) => null, (r) => shortLinkList = r.map((e) => e).toList());
+    // result.fold((l) => null, (r) => shortLinkList = r.map((e) => e).toList());
 
     emit(state.copyWith(shortLinks: shortLinkList, isAddButtonPressed: false));
   }
@@ -93,8 +122,7 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
     Emitter<HomeState> emit,
     // String shortLinkId
   ) {
-    _useCaseProvider.removeShortLinkFromHistory(
-        RemoveShortLinkFromHistoryListParams(event.shortLinkId));
+    _presenter.removeShortLink(event.shortLinkId);
 
     getShortLinks(emit);
   }
@@ -113,8 +141,9 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
     // ShortLink shortLink
   ) async {
     await Clipboard.setData(ClipboardData(text: event.shortLink.fullShortLink));
-    final ClipboardData? _data = await Clipboard.getData('text/plain');
+    // final ClipboardData? _data = await Clipboard.getData('text/plain');
 
+    // ignore: avoid_function_literals_in_foreach_calls
     state.shortLinks.forEach(
       (element) {
         element.id == event.shortLink.id

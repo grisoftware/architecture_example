@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:convert';
 
 import 'package:http/http.dart' as http;
@@ -8,7 +9,7 @@ import 'package:shortly_clean/core/usecase/usecase.dart';
 import 'package:shortly_clean/features/shortly_clean/data/model/short_link_model.dart';
 
 abstract class ShortLinkRemoteDataSource {
-  Future<List<ShortLinkModel>> getShortLinksFromHistory(NoParams noParams);
+  Stream<List<ShortLinkModel>> getShortLinksFromHistory(NoParams noParams);
   Future<void> addShortLinkToHistoryList(String url);
   Future<void> removeShortLinkFromHistory(String shortLinkId);
 }
@@ -20,7 +21,12 @@ class ShortLinkRemoteDataSourceImpl implements ShortLinkRemoteDataSource {
   ShortLinkRemoteDataSourceImpl._internal();
   factory ShortLinkRemoteDataSourceImpl() => _instance;
 
-  List<ShortLinkModel> shortLinkModelList = [];
+  List<ShortLinkModel> shortLinkModelList = [
+    ShortLinkModel(fullShortLink: 'test', id: '123', isCopied: false)
+  ];
+
+  final StreamController<List<ShortLinkModel>> _streamController =
+      StreamController.broadcast();
 
   var header = {
     "Access-Control_Allow_Origin": "*",
@@ -29,8 +35,9 @@ class ShortLinkRemoteDataSourceImpl implements ShortLinkRemoteDataSource {
   final String baseUrl = "https://api.shrtco.de/v2/shorten?url=";
 
   @override
-  Future<List<ShortLinkModel>> getShortLinksFromHistory(NoParams noParams) {
-    return Future.value(shortLinkModelList);
+  Stream<List<ShortLinkModel>> getShortLinksFromHistory(NoParams noParams) {
+    _streamController.add(shortLinkModelList);
+    return _streamController.stream;
   }
 
   @override
@@ -61,6 +68,7 @@ class ShortLinkRemoteDataSourceImpl implements ShortLinkRemoteDataSource {
         }).toList();
 
         shortLinkModelList.addAll(shortLinks);
+        _streamController.add(shortLinkModelList);
       }
     }
   }
@@ -70,5 +78,7 @@ class ShortLinkRemoteDataSourceImpl implements ShortLinkRemoteDataSource {
     int index = shortLinkModelList
         .indexWhere((shortLink) => shortLink.id == shortLinkId);
     shortLinkModelList.removeAt(index);
+
+    _streamController.add(shortLinkModelList);
   }
 }

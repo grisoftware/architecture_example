@@ -21,12 +21,12 @@ import '../../../features/shortly_clean/domain/usecases/add_short_link.dart'
 import '../../../features/shortly_clean/domain/usecases/get_short_link.dart'
     as _i9;
 import '../../../features/shortly_clean/domain/usecases/remove_short_link.dart'
-    as _i10;
+    as _i12;
 import '../../../features/shortly_clean/presentation/add_shortlink/cubit/add_shortlink_cubit.dart'
     as _i3;
 import '../../../features/shortly_clean/presentation/home/bloc/home_bloc.dart'
-    as _i12;
-import '../../../features/shortly_clean/presentation/home/home_usecase_provider/home_usecase_provider.dart'
+    as _i10;
+import '../../../features/shortly_clean/presentation/home/home_presenter.dart'
     as _i11; // ignore_for_file: unnecessary_lambdas
 
 // ignore_for_file: lines_longer_than_80_chars
@@ -45,14 +45,12 @@ _i1.GetIt $initGetIt(_i1.GetIt get,
       _i8.AddShortLinkToHistoryList(get<_i5.ShortLinkRemoteRepository>()));
   gh.factory<_i9.GetShortLinksFromHistoryList>(() =>
       _i9.GetShortLinksFromHistoryList(get<_i5.ShortLinkRemoteRepository>()));
-  gh.factory<_i10.RemoveShortLinkFromHistoryList>(() =>
-      _i10.RemoveShortLinkFromHistoryList(
+  gh.factory<_i10.HomeBloc>(
+      () => _i10.HomeBloc(get<_i5.ShortLinkRemoteRepository>()));
+  gh.factory<_i11.HomePresenter>(
+      () => _i11.HomePresenter(get<_i5.ShortLinkRemoteRepository>()));
+  gh.factory<_i12.RemoveShortLinkFromHistoryList>(() =>
+      _i12.RemoveShortLinkFromHistoryList(
           get<_i5.ShortLinkRemoteRepository>()));
-  gh.factory<_i11.HomeUseCaseProviderImpl>(() => _i11.HomeUseCaseProviderImpl(
-      get<_i8.AddShortLinkToHistoryList>(),
-      get<_i10.RemoveShortLinkFromHistoryList>(),
-      get<_i9.GetShortLinksFromHistoryList>()));
-  gh.factory<_i12.HomeBloc>(
-      () => _i12.HomeBloc(get<_i11.HomeUseCaseProviderImpl>()));
   return get;
 }

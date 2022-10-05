@@ -1,3 +1,5 @@
+// ignore_for_file: must_be_immutable
+
 part of 'home_bloc.dart';
 
 abstract class HomeEvent extends Equatable {
@@ -8,7 +10,7 @@ abstract class HomeEvent extends Equatable {
 }
 
 class Init extends HomeEvent {
-  Init();
+  const Init();
   @override
   List<Object> get props => [];
 }
@@ -21,7 +23,7 @@ class OnShortenItButtonPressed extends HomeEvent {
 }
 
 class OnGetShortLinks extends HomeEvent {
-  OnGetShortLinks();
+  const OnGetShortLinks();
   @override
   List<Object> get props => [];
 }

@@ -1,24 +1,37 @@
 import 'dart:async';
 
-import 'package:dartz/dartz.dart';
 import 'package:injectable/injectable.dart';
-import 'package:shortly_clean/features/shortly_clean/domain/entities/short_link_entity.dart';
+import 'package:shortly_clean/features/shortly_clean/data/model/short_link_model.dart';
 import 'package:shortly_clean/features/shortly_clean/domain/repository/remote/short_link_remote_repository.dart';
 
-import '../../../../core/errors/failures.dart';
 import '../../../../core/usecase/usecase.dart';
 
 @injectable
-class GetShortLinksFromHistoryList extends UseCase<List<ShortLink>, void> {
+class GetShortLinksFromHistoryList extends UseCase<List<ShortLinkModel>, void> {
   final ShortLinkRemoteRepository _shortLinkRepository;
+  final StreamController<List<ShortLinkModel>> _controller;
 
   GetShortLinksFromHistoryList(
     this._shortLinkRepository,
-  );
+  ) : _controller = StreamController.broadcast();
 
   @override
-  Future<Either<Failure, List<ShortLink>>> call(void params) async {
-    return await Future.value(
-        _shortLinkRepository.getShortLinksFromHistory(NoParams()));
+  Future<Stream<List<ShortLinkModel>>> buildUseCaseStream(void params) async {
+    try {
+      _shortLinkRepository
+          .getShortLinksFromHistory()
+          .listen((List<ShortLinkModel> contacts) {
+        if (!_controller.isClosed) _controller.add(contacts);
+      });
+    } catch (error, stackTrace) {
+      _controller.addError(error, stackTrace);
+    }
+    return _controller.stream;
+  }
+
+  @override
+  void dispose() {
+    _controller.close();
+    super.dispose();
   }
 }

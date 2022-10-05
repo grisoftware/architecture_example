@@ -1,10 +1,10 @@
+// ignore_for_file: avoid_print
+
 import 'dart:async';
 
-import 'package:dartz/dartz.dart';
 import 'package:injectable/injectable.dart';
 import 'package:shortly_clean/features/shortly_clean/domain/repository/remote/short_link_remote_repository.dart';
 
-import '../../../../core/errors/failures.dart';
 import '../../../../core/usecase/usecase.dart';
 
 @injectable
@@ -17,9 +17,21 @@ class AddShortLinkToHistoryList
   );
 
   @override
-  Future<Either<Failure, void>> call(
+  Future<Stream<void>> buildUseCaseStream(
       AddShortLinkToHistoryListParams? params) async {
-    return await _shortLinkRepository.addShortLinkToHistoryList(params!.url);
+    StreamController<void> controller = StreamController();
+
+    try {
+      final result =
+          await _shortLinkRepository.addShortLinkToHistoryList(params!.url);
+      controller.add(result);
+      controller.close();
+    } catch (e, st) {
+      print(e);
+      print(st);
+      controller.addError(e, st);
+    }
+    return controller.stream;
   }
 }
 

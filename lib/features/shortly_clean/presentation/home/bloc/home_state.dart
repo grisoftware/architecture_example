@@ -6,6 +6,7 @@ abstract class HomeBaseState extends Equatable {
   List<Object> get props => [];
 }
 
+// ignore: must_be_immutable
 class HomeState extends HomeBaseState {
   List<ShortLink> shortLinks;
   final List<String> fullLinks;
