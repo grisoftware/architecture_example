@@ -28,9 +28,9 @@ class OnGetShortLinks extends HomeEvent {
   List<Object> get props => [];
 }
 
-class RemoveShortLinkFromHistory extends HomeEvent {
+class RemoveShortLinkFromHistoryeEvent extends HomeEvent {
   String shortLinkId = '';
-  RemoveShortLinkFromHistory(this.shortLinkId);
+  RemoveShortLinkFromHistoryeEvent(this.shortLinkId);
   @override
   List<Object> get props => [];
 }

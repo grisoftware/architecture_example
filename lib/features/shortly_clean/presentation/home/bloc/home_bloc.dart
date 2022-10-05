@@ -31,7 +31,7 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> with ChangeNotifier {
       return await _onInit(event, emit);
     });
     on<OnShortenItButtonPressed>(onShortenItButtonPressed);
-    on<RemoveShortLinkFromHistory>(removeShortLinkFromHistory);
+    on<RemoveShortLinkFromHistoryeEvent>(removeShortLinkFromHistory);
     on<OnUrlTextFormFieldChanged>(onUrlTextFormFieldChanged);
     on<CopyItemToClipboard>(copyItemToClipboard);
     on<OnGetShortLinks>(_onGetShortLinks);
@@ -118,7 +118,7 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> with ChangeNotifier {
   }
 
   void removeShortLinkFromHistory(
-    RemoveShortLinkFromHistory event,
+    RemoveShortLinkFromHistoryeEvent event,
     Emitter<HomeState> emit,
     // String shortLinkId
   ) {

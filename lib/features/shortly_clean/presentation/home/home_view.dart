@@ -205,7 +205,7 @@ class _ShortLinkContainer extends StatelessWidget {
                 ),
                 GestureDetector(
                   onTap: () {
-                    addEvent(RemoveShortLinkFromHistory(shortLink.id));
+                    addEvent(RemoveShortLinkFromHistoryeEvent(shortLink.id));
                   },
                   child: const Icon(
                     Icons.delete,

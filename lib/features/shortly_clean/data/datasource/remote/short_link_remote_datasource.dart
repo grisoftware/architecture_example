@@ -22,7 +22,7 @@ class ShortLinkRemoteDataSourceImpl implements ShortLinkRemoteDataSource {
   factory ShortLinkRemoteDataSourceImpl() => _instance;
 
   List<ShortLinkModel> shortLinkModelList = [
-    ShortLinkModel(fullShortLink: 'test', id: '123', isCopied: false)
+    ShortLinkModel(fullShortLink: 'test', id: '1', isCopied: false)
   ];
 
   final StreamController<List<ShortLinkModel>> _streamController =
