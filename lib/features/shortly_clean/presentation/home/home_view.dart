@@ -18,9 +18,10 @@ class HomeView extends StatelessWidget {
     final EdgeInsets padding = MediaQuery.of(context).padding;
 
     return BlocProvider(
-      create: (_) => getIt<HomeBloc>()..add(Init()),
+      create: (_) => getIt<HomeBloc>()..add(const Init()),
       child: BlocBuilder<HomeBloc, HomeState>(builder: (_, state) {
         final HomeBloc homeBloc = _.read<HomeBloc>();
+        // ignore: no_leading_underscores_for_local_identifiers
         void _addEvent(HomeEvent event) => _.read<HomeBloc>().add(event);
         return Scaffold(
           body: Column(
@@ -70,7 +71,7 @@ class HomeView extends StatelessWidget {
                             ),
                           ),
                           state.isAddButtonPressed
-                              ? Center(
+                              ? const Center(
                                   child: CircularProgressIndicator(
                                     color: kSecondaryColor,
                                   ),
@@ -92,7 +93,8 @@ class HomeView extends StatelessWidget {
                             for (int i = 0; i < state.shortLinks.length; i++)
                               Column(
                                 children: [
-                                  SizedBox(height: 2 * defaultSizeBoxPadding),
+                                  const SizedBox(
+                                      height: 2 * defaultSizeBoxPadding),
                                   _ShortLinkContainer(
                                     shortLink: state.shortLinks[i],
                                     fullLink: state.shortLinks[i].fullShortLink,
@@ -134,7 +136,7 @@ class HomeView extends StatelessWidget {
                       ),
                     ),
                     const SizedBox(height: defaultSizeBoxPadding),
-                    Container(
+                    SizedBox(
                       width: size.width - 5 * horizontalPadding,
                       child: DefaultButton(
                         onPressed: state.url.isNotEmpty
@@ -164,7 +166,7 @@ class _ShortLinkContainer extends StatelessWidget {
   final String fullLink;
   final Function(HomeEvent event) addEvent;
 
-  _ShortLinkContainer({
+  const _ShortLinkContainer({
     required this.shortLink,
     required this.fullLink,
     required this.addEvent,
@@ -185,14 +187,14 @@ class _ShortLinkContainer extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Container(
-            padding: EdgeInsets.only(
+            padding: const EdgeInsets.only(
               top: horizontalPadding,
               left: horizontalPadding,
               right: horizontalPadding,
             ),
             child: Row(
               children: [
-                Container(
+                SizedBox(
                   width: size.width - 6 * horizontalPadding,
                   child: Text(
                     fullLink,
@@ -205,7 +207,7 @@ class _ShortLinkContainer extends StatelessWidget {
                   onTap: () {
                     addEvent(RemoveShortLinkFromHistory(shortLink.id));
                   },
-                  child: Icon(
+                  child: const Icon(
                     Icons.delete,
                     color: kBlack,
                   ),
@@ -213,11 +215,11 @@ class _ShortLinkContainer extends StatelessWidget {
               ],
             ),
           ),
-          Divider(
+          const Divider(
             color: kBlack,
           ),
           Container(
-            padding: EdgeInsets.only(
+            padding: const EdgeInsets.only(
               left: horizontalPadding,
               right: horizontalPadding,
             ),
@@ -229,9 +231,9 @@ class _ShortLinkContainer extends StatelessWidget {
               overflow: TextOverflow.ellipsis,
             ),
           ),
-          SizedBox(height: 2 * defaultSizeBoxPadding),
+          const SizedBox(height: 2 * defaultSizeBoxPadding),
           Container(
-            padding: EdgeInsets.only(
+            padding: const EdgeInsets.only(
               left: horizontalPadding,
               right: horizontalPadding,
             ),

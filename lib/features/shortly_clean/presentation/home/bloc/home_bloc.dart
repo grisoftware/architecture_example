@@ -113,8 +113,8 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
     // ShortLink shortLink
   ) async {
     await Clipboard.setData(ClipboardData(text: event.shortLink.fullShortLink));
-    final ClipboardData? _data = await Clipboard.getData('text/plain');
 
+    // ignore: avoid_function_literals_in_foreach_calls
     state.shortLinks.forEach(
       (element) {
         element.id == event.shortLink.id

@@ -61,7 +61,6 @@ class DataShortLinkRemoteRepository implements ShortLinkRemoteRepository {
     });
   }
 
-//TODO: NULL CHECK TO FLOW
   @override
   Future<Either<Failure, List<ShortLink>>> getShortLinksFromHistory(
       NoParams noParams) async {
